@@ -57,7 +57,7 @@ export default {
     async submitProduct() {
       //es un producto editado?
       if (this.selectedProduct) {
-        await updateDoc(doc(db, 'products', this.selectedProduct, this.productForm))
+        await updateDoc(doc(db, 'products', this.selectedProduct), this.productForm)
       } else {
         //si es un producto nuevo
         await addDoc(collection(db, 'products'), this.productForm)
