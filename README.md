@@ -1,6 +1,6 @@
 # CRUD-vueFirebase
 
-This template should help get you started developing with Vue 3 in Vite.
+Demo de aplicacion CRUD con lista de ordenes hecha en Vue 3 y Firebase
 
 ## Recommended IDE Setup
 
