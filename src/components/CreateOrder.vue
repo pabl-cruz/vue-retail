@@ -57,7 +57,7 @@ export default {
         alert('Por favor, agregue al menos un producto en su orden')
         return
       }
-      await addDoc(collection, (db, 'orders'), this.newOrder)
+      await addDoc(collection(db, 'orders'), this.newOrder)
       alert('Orden creada con éxito')
       this.resetOrderForm()
     },

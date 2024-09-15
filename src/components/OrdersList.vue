@@ -19,7 +19,7 @@ export default {
       //buscar y capturar toda la info de la coleccion products
       const querySnapshot = await getDocs(collection(db, 'orders'))
       //asignar db a variable vue
-      this.products = querySnapshot.docs
+      this.orders = querySnapshot.docs
         //mapear arreglo de doc por id, agregar todas las propiedades en data
         .map((doc) => ({ id: doc.id, ...doc.data() }))
     },
