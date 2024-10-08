@@ -2,12 +2,16 @@
 //importar base de datos de firebase
 import { db } from '../firebaseConfig.js'
 //importar funcionalidades para ver y alterar tabla desde firestore
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore'
+import { collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore'
 
 export default {
   data() {
     return {
-      orders: []
+      orders: [],
+      //almacenar la orden actual para ser editada
+      currentOrder: null,
+      //almacenar los datos editados de la orden seleccionada
+      editedOrder: {}
     }
   },
   async created() {
@@ -27,9 +31,24 @@ export default {
     async deleteOrder(id) {
       await deleteDoc(doc(db, 'orders', id))
       await this.fetchOrders()
-    }
+    },
     //EDITAR ORDEN
-    //editOrder(id) {}
+    async editOrder(id) {
+      const orderDoc = doc(db, 'orders', id)
+      //actualizar documento con los datos nuevos de la orden en coleccion 'orders'
+      await updateDoc(orderDoc, this.editedOrder)
+      //refrescar lista de ordenes
+      await this.fetchOrders()
+      this.currentOrder = null
+    },
+
+    //SELECCIONAR ORDEN
+    setCurrentOrder(order) {
+      //asignar orden seleccionada a variable currentOrder
+      this.currentOrder = order
+      //copiar los detalles de la orden a la orden editada
+      this.editedOrder = { ...order }
+    }
   }
 }
 </script>
@@ -40,6 +59,7 @@ export default {
       <thead>
         <tr>
           <th>Número de Orden</th>
+          <th>Productos</th>
           <th>Total</th>
           <th>Acciones</th>
         </tr>
@@ -47,15 +67,38 @@ export default {
       <tbody>
         <tr v-for="order in orders" :key="order.id">
           <td>{{ order.orderNumber }}</td>
+          <td>
+            <ul v-for="product in order.products" :key="product.id">
+              <li>
+                {{ product.name }}
+                -
+                {{ product.quantity }}
+              </li>
+            </ul>
+          </td>
           <td>${{ order.total }}</td>
           <td>
-            <!--<button class="btn-small" @click="editOrder(order.id)">Editar</button>-->
+            <button class="btn-small" @click="setCurrentOrder(order)">Editar</button>
             <button class="btn-small btn-danger" @click="deleteOrder(order.id)">Eliminar</button>
           </td>
         </tr>
       </tbody>
     </table>
     <router-link to="/create-order" class="add-order-link">Agregar nueva orden</router-link>
+    <!--formulario para editar orden-->
+    <!--aparecerá formulario si se selecciona una orden-->
+    <div v-if="currentOrder" class="edit-order-form">
+      <h2>Editar Orden</h2>
+      <form @submit.prevent="editOrder(currentOrder.id)">
+        <label for="orderNumber">Número de orden</label>
+        <input type="text" v-model="editedOrder.orderNumber" id="orderNumber" required />
+        <label for="total">Total</label>
+        <input type="number" v-model="editedOrder.total" id="total" required />
+
+        <button class="btn-small" type="submit">Guardar</button>
+        <button type="button" class="btn-small" @click="currentOrder = null">Cancelar</button>
+      </form>
+    </div>
   </div>
 </template>
 <style scoped>
@@ -63,6 +106,9 @@ export default {
   max-width: 800px;
   margin: auto;
   padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
 }
 .orders-table {
   width: 100%;
@@ -78,8 +124,17 @@ export default {
   padding: 8px;
   text-align: left;
 }
+.btn-small {
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .btn-small.btn-danger {
   background-color: #dc3545;
+  color: #ffffff;
 }
 .btn-small:hover,
 .btn-danger:hover {

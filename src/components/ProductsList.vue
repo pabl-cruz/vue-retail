@@ -103,7 +103,7 @@ export default {
         </tr>
       </tbody>
     </table>
-    <button @click="showAddProduct = true">Agregar nuevo producto</button>
+    <button @click="showAddProduct = true" class="btn-small btn-add">Agregar nuevo producto</button>
     <!--formulario para agregar o eliminar producto-->
     <div v-if="showAddProduct || selectedProduct" class="product-form">
       <input v-model="productForm.name" placeholder="Nombre de Producto" />
@@ -146,6 +146,9 @@ td {
 
 .btn-small.btn-danger {
   background-color: #dc3545;
+}
+.btn-small.btn-add {
+  background-color: #009966;
 }
 .btn-small:hover,
 .btn-danger:hover {

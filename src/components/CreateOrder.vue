@@ -219,4 +219,13 @@ p {
   background-color: #ccc;
   cursor: not-allowed;
 }
+.submit-button {
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #009933;
+  color: #ffffff;
+}
 </style>
